@@ -26,8 +26,14 @@ router.get("/:id", async (req, res) => {
       .select("r.id", "r.name", "d.name as dish")
       .where("r.id", req.params.id)
       .first();
+
+    const ingredientList = await db("recipe_ingredients as ri")
+      .join("ingredients as i", "ri.ingredient_id", "i.id")
+      .select("i.name")
+      .where("ri.recipe_id", recipe.id);
     if (recipe) {
-      res.status(200).json(recipe);
+      res.status(200).json({ ...recipe, ingredientList });
+      console.log(ingredientList);
     } else {
       res.status(404).json({
         message: "The recipe with the specified ID does not exist."

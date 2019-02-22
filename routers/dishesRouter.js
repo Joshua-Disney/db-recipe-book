@@ -43,12 +43,12 @@ router.get("/:id", async (req, res) => {
 // Get all recipes in a dish
 router.get("/:id/recipes", async (req, res) => {
   try {
-    const dishesutdents = await db("recipes as r")
+    const dishRecipes = await db("recipes as r")
       .join("dishes as d", "d.id", "r.dish_id")
       .select("r.id", "r.name", "d.name as dish")
       .where("r.dish_id", req.params.id);
-    if (dishesutdents) {
-      res.status(200).json(dishesutdents);
+    if (dishRecipes) {
+      res.status(200).json(dishRecipes);
     } else {
       res.status(404).json({
         message: "The dish with the specified ID does not exist."
