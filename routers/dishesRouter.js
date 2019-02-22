@@ -40,13 +40,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Get all students in a dish
-router.get("/:id/students", async (req, res) => {
+// Get all recipes in a dish
+router.get("/:id/recipes", async (req, res) => {
   try {
-    const dishesutdents = await db("students as s")
-      .join("dishes as d", "d.id", "s.dish_id")
-      .select("s.id", "s.name", "d.name as dish")
-      .where("s.dish_id", req.params.id);
+    const dishesutdents = await db("recipes as r")
+      .join("dishes as d", "d.id", "r.dish_id")
+      .select("r.id", "r.name", "d.name as dish")
+      .where("r.dish_id", req.params.id);
     if (dishesutdents) {
       res.status(200).json(dishesutdents);
     } else {

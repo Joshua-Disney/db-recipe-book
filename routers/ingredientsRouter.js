@@ -4,110 +4,108 @@ const db = require("../data/dbConfig.js");
 
 const router = express.Router();
 
-// Get all recipes
+// Get all ingredients
 router.get("/", async (req, res) => {
   try {
-    const recipes = await db("recipes");
-    res.status(200).json(recipes);
+    const ingredients = await db("ingredients");
+    res.status(200).json(ingredients);
   } catch (error) {
     console.log(error);
     res.status(500).json({
       error,
-      message: "Failed to retrieve recipe data"
+      message: "Failed to retrieve ingredient data"
     });
   }
 });
 
-// Get recipe by id
+// Get ingredient by id
 router.get("/:id", async (req, res) => {
   try {
-    const recipe = await db("recipes as r")
-      .join("dishes as d", "d.id", "r.dish_id")
-      .select("r.id", "r.name", "d.name as dish")
-      .where("r.id", req.params.id)
+    const ingredient = await db("ingredients")
+      .where({ id: req.params.id })
       .first();
-    if (recipe) {
-      res.status(200).json(recipe);
+    if (ingredient) {
+      res.status(200).json(ingredient);
     } else {
       res.status(404).json({
-        message: "The recipe with the specified ID does not exist."
+        message: "The ingredient with the specified ID does not exist."
       });
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({
       error,
-      message: "Failed to retrieve recipe data"
+      message: "Failed to retrieve ingredient data"
     });
   }
 });
 
-// Create new recipe
+// Create new ingredient
 router.post("/", async (req, res) => {
   try {
-    const [id] = await db("recipes").insert(req.body);
-    const recipe = await db("recipes")
+    const [id] = await db("ingredients").insert(req.body);
+    const ingredient = await db("ingredients")
       .where({ id })
       .first();
     res.status(201).json({
-      recipe,
-      message: "Successfully created recipe data"
+      ingredient,
+      message: "Successfully created ingredient data"
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       error,
-      message: "Failed to create recipe data"
+      message: "Failed to create ingredient data"
     });
   }
 });
 
-// Update existing recipe
+// Update existing ingredient
 router.put("/:id", async (req, res) => {
   try {
-    const count = await db("recipes")
+    const count = await db("ingredients")
       .where({ id: req.params.id })
       .update(req.body);
     if (count > 0) {
-      const recipe = await db("recipes")
+      const ingredient = await db("ingredients")
         .where({ id: req.params.id })
         .first();
       res.status(200).json({
-        recipe,
-        message: "Successfully updated recipe data"
+        ingredient,
+        message: "Successfully updated ingredient data"
       });
     } else {
       res.status(404).json({
-        message: "The recipe with the specified ID does not exist."
+        message: "The ingredient with the specified ID does not exist."
       });
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({
       error,
-      message: "Failed to update recipe data"
+      message: "Failed to update ingredient data"
     });
   }
 });
 
-// Delete existing recipe
+// Delete existing ingredient
 router.delete("/:id", async (req, res) => {
   try {
-    const count = await db("recipes")
+    const count = await db("ingredients")
       .where({ id: req.params.id })
       .del();
     if (count > 0) {
       res.status(204).end();
     } else {
       res.status(404).json({
-        message: "The recipe with the specified ID does not exist."
+        message: "The ingredient with the specified ID does not exist."
       });
     }
   } catch (error) {
     console.log(error);
     res.status(500).json({
       error,
-      message: "Failed to delete recipe data"
+      message: "Failed to delete ingredient data"
     });
   }
 });
